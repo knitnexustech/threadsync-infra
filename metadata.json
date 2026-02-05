@@ -1,0 +1,5 @@
+{
+  "name": "ThreadSync - Production Tracker",
+  "description": "A mobile-first production tracking app for Manufacturers and MSME Vendors (Knitting, Dyeing, etc.) with WhatsApp-inspired UI and strict multi-tenant security.",
+  "requestFramePermissions": []
+}
