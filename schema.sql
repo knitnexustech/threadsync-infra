@@ -31,7 +31,7 @@ CREATE TABLE purchase_orders (
     style_number TEXT NOT NULL,
     status TEXT CHECK (status IN ('PENDING', 'IN_PROGRESS', 'COMPLETED')) NOT NULL DEFAULT 'PENDING',
     image_url TEXT,
-    created_by UUID REFERENCES users(id),
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE channel_members (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     channel_id UUID REFERENCES channels(id) ON DELETE CASCADE,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    added_by UUID REFERENCES users(id),
+    added_by UUID REFERENCES users(id) ON DELETE SET NULL,
     last_read_at TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(channel_id, user_id)
@@ -62,7 +62,7 @@ CREATE TABLE channel_members (
 CREATE TABLE messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     channel_id UUID REFERENCES channels(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES users(id),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
     content TEXT NOT NULL,
     is_system_update BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT NOW()
@@ -73,7 +73,7 @@ CREATE TABLE channel_specs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     channel_id UUID REFERENCES channels(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
-    created_by UUID REFERENCES users(id),
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -86,6 +86,15 @@ CREATE TABLE channel_files (
     type TEXT NOT NULL,
     uploaded_by TEXT,
     uploaded_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 10. Push Subscriptions Table
+CREATE TABLE push_subscriptions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    subscription_json JSONB NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, subscription_json)
 );
 
 -- ⚠️ IMPORTANT: RLS Policies and Indexes should be added based on RBAC_QUICK_REFERENCE.md
