@@ -44,6 +44,7 @@ CREATE TABLE channels (
     status TEXT NOT NULL DEFAULT 'PENDING',
     completion_percentage INTEGER DEFAULT 0,
     vendor_id UUID REFERENCES companies(id),
+    due_date TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
